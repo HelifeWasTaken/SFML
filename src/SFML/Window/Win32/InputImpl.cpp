@@ -485,6 +485,21 @@ WORD sfScanToWinScanExtended(Keyboard::Scancode code)
         case Keyboard::ScanLaunchMail:         return 108 | 0xE100;
         case Keyboard::ScanLaunchMediaSelect:  return 109 | 0xE100;
 
+        // Falls back to default
+        // Remove -Werror-switch error
+        case Keyborad::ScanForward:
+        case Keyboard::ScanRefresh:
+        case Keyboard::ScanStop:
+        case Keyboard::ScanSearch:
+        case Keyboard::ScanFavorites:
+        case Keyboard::ScanHomePage:
+        case Keyboard::ScanLaunchApplication1:
+        case Keyboard::ScanLaunchApplication2:
+        case Keyboard::ScanLaunchMail:
+        case Keyboard::ScanLaunchMediaSelect:
+
+        // To remove -Werror-Switch
+        case Keyboard::ScancodeCount:
         // Use non-extended mapping
         default: return sfScanToWinScan(code);
     }
@@ -580,7 +595,7 @@ void InputImpl::ensureMappings()
     for (int i = 0; i < Keyboard::ScancodeCount; ++i)
     {
         Keyboard::Scancode scan = static_cast<Keyboard::Scancode>(i);
-        UINT virtualKey = sfScanToVirtualKey(scan);
+        UINT virtualKey = sfScanToVirtualKey(static_cast<int>(scan));
         Keyboard::Key key = virtualKeyToSfKey(virtualKey);
         m_keyToScancodeMapping[key] = scan;
         m_scancodeToKeyMapping[scan] = key;
@@ -600,7 +615,7 @@ bool InputImpl::isKeyPressed(Keyboard::Key key)
 bool InputImpl::isKeyPressed(Keyboard::Scancode code)
 {
     UINT virtualKey = sfScanToVirtualKey(code);
-    return (GetAsyncKeyState(virtualKey) & KF_UP) != 0;
+    return (GetAsyncKeyState(static_cast<int>(virtualKey)) & KF_UP) != 0;
 }
 
 ////////////////////////////////////////////////////////////
